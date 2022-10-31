@@ -1,0 +1,93 @@
+CREATE TABLE public."Clients"
+(
+    id serial NOT NULL,
+    full_name text NOT NULL,
+    phone_number text NOT NULL,
+    birthday date NOT NULL,
+    sex "char" NOT NULL,
+    last_visit date NOT NULL,
+    registration_date date NOT NULL,
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE IF EXISTS public."Clients"
+    OWNER to postgres;
+
+CREATE TABLE public."Users"
+(
+    id serial NOT NULL,
+    login_user text NOT NULL,
+    password_user text NOT NULL,
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE IF EXISTS public."Users"
+    OWNER to postgres;
+
+CREATE TABLE public."Saloons"
+(
+    id serial NOT NULL,
+    adress_saloon text NOT NULL,
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE IF EXISTS public."Saloons"
+    OWNER to postgres;
+
+CREATE TABLE public."Employee"
+(
+    id serial NOT NULL,
+    full_name text NOT NULL,
+    phone_number text NOT NULL,
+    id_saloon integer NOT NULL,
+	FOREIGN KEY (id_saloon) REFERENCES public."Saloons"("id"),
+    permission_employer integer NOT NULL,
+    id_user integer NOT NULL,
+	FOREIGN KEY (id_user) REFERENCES public."Users"("id"),
+    PRIMARY KEY ("id")
+);
+
+ALTER TABLE IF EXISTS public."Employee"
+    OWNER to postgres;
+
+CREATE TABLE public."Services"
+(
+    id serial NOT NULL,
+    name_service text NOT NULL,
+    price integer NOT NULL,
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE IF EXISTS public."Services"
+    OWNER to postgres;
+
+CREATE TABLE public."Orders_saloons"
+(
+    "id" serial NOT NULL,
+    id_saloon integer NOT NULL,
+	FOREIGN KEY (id_saloon) REFERENCES public."Saloons"("id"),
+    id_service integer NOT NULL,
+	FOREIGN KEY (id_service) REFERENCES public."Services"("id"),
+    PRIMARY KEY ("id")
+);
+
+ALTER TABLE IF EXISTS public."Orders_saloons"
+    OWNER to postgres;
+
+CREATE TABLE public."Orders"
+(
+    "id" serial NOT NULL,
+    id_service integer NOT NULL,
+	FOREIGN KEY (id_service) REFERENCES public."Services"("id"),
+    id_client integer NOT NULL,
+	FOREIGN KEY (id_client) REFERENCES public."Clients"("id"),
+    id_employer integer NOT NULL,
+	FOREIGN KEY (id_employer) REFERENCES public."Employee"("id"),
+    id_saloon integer NOT NULL,
+	FOREIGN KEY (id_saloon) REFERENCES public."Saloons"("id"),
+    orders_date date NOT NULL,
+    PRIMARY KEY ("id")
+);
+
+ALTER TABLE IF EXISTS public."Orders"
+    OWNER to postgres;

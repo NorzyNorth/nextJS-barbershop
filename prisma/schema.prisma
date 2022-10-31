@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Clients {
+  id                Int      @id @default(autoincrement())
+  full_name         String
+  phone_number      String
+  birthday          DateTime @db.Date
+  sex               String   @db.Char
+  last_visit        DateTime @db.Date
+  registration_date DateTime @db.Date
+  Orders            Orders[]
+}
+
+model Employee {
+  id                  Int      @id @default(autoincrement())
+  full_name           String
+  phone_number        String
+  id_saloon           Int
+  permission_employer Int
+  id_user             Int
+  Saloons             Saloons  @relation(fields: [id_saloon], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Users               Users    @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Orders              Orders[]
+}
+
+model Orders {
+  id          Int      @id @default(autoincrement())
+  id_service  Int
+  id_client   Int
+  id_employer Int
+  id_saloon   Int
+  orders_date DateTime @db.Date
+  Clients     Clients  @relation(fields: [id_client], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Employee    Employee @relation(fields: [id_employer], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Saloons     Saloons  @relation(fields: [id_saloon], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Services    Services @relation(fields: [id_service], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Orders_saloons {
+  id         Int      @id @default(autoincrement())
+  id_saloon  Int
+  id_service Int
+  Saloons    Saloons  @relation(fields: [id_saloon], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Services   Services @relation(fields: [id_service], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Saloons {
+  id             Int              @id @default(autoincrement())
+  adress_saloon  String
+  Employee       Employee[]
+  Orders         Orders[]
+  Orders_saloons Orders_saloons[]
+}
+
+model Services {
+  id             Int              @id @default(autoincrement())
+  name_service   String
+  price          Int
+  Orders         Orders[]
+  Orders_saloons Orders_saloons[]
+}
+
+model Users {
+  id            Int        @id @default(autoincrement())
+  login_user    String
+  password_user String
+  Employee      Employee[]
+}
